@@ -17,7 +17,6 @@ import pawforyou.pawforyou.services.CategoryService;
 import pawforyou.pawforyou.services.ProductService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,14 +41,15 @@ public class ApiProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                         @RequestParam(name = "sortBy", required = false, defaultValue = "insertionDate") String sortBy,
                                         @RequestParam(name = "ascending", required = false, defaultValue = "false") Boolean ascending) {
-        if (sortBy.equals("price")  || sortBy == "insertion date") {
-            return productService.getAllProducts(page, size, sortBy, ascending);
+        if (sortBy.equals("price")  || sortBy.equals("insertionDate")) {
+            return ResponseEntity.status(200).body(productService.getAllProducts(page, size, sortBy, ascending));
         }
-        return new ArrayList<>();
+
+        return ResponseEntity.status(404).body(null);
     }
 
     @DeleteMapping("/{id}")
