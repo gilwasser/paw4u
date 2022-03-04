@@ -24,7 +24,6 @@ public class CategoryController {
     @GetMapping("/")
     public String greeting(@RequestParam(name="sort", required=false, defaultValue="date") String name, Model model,
                            HttpServletResponse response) {
-        response.addCookie(new Cookie("name", "Gil"));
         model.addAttribute("name", name);
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
@@ -32,11 +31,10 @@ public class CategoryController {
     }
 
     @GetMapping("/category/{id}")
-    public String categoryAll(@PathVariable int id, Model model, @CookieValue(value = "name", defaultValue = "santana") String name) {
+    public String categoryAll(@PathVariable int id, Model model) {
         List<Product> products = productService.getProductsByCategory(id);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("products", products);
-        model.addAttribute("name", name);
         return "category";
     }
 
