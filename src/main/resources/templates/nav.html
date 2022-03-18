@@ -1,28 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  dir="rtl">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" dir="rtl">
 
 <body class="">
-<nav th:fragment="navbar(categories)" class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            PAW-4-U
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li  class="nav-item">
-                    <a class="nav-link" href="/sales">מבצעים חמים</a>
-                </li>
-                <li th:each="category: ${categories}"  class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{'/category/' + ${category.id}}" th:text="${category.name}"></a>
-                </li>
-            </ul>
+    <nav th:fragment="navbar(categories, name)" class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                PAW-4-U
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/sales">מבצעים חמים</a>
+                    </li>
+                    <li th:each="category: ${categories}" class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{'/category/' + ${category.id}}"
+                            th:text="${category.name}"></a>
+                    </li>
+                </ul>
+                <span class="m-auto"></span>
+                <div class="" th:if="${name.length == 0}">
+                    <a th:href="@{/auth}" class="btn btn-primary rounded-0">התחבר</a>
+                    <a th:href="@{/auth/register}" class="btn btn-secondary rounded-0">הרשם</a>
+                </div>
+                <div  class="nav-item" th:if="${name.length > 0}">
+                    <a th:text="'שלום ' + ${name}"></a>
+                    <a th:href="@{/auth/logout}" class="btn btn-danger rounded-0">התנתק</a>
+                </div> 
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
 </body>
-</html>
 
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" dir="rtl">
+
+<body class="">
+    <div th:fragment="cart(products, sum, category)" class="text-center">
+        <h2>עגלת הקניות</h2>
+        <section class="h-100 h-custom">
+            <div class="container h-100 py-5 ">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="h5">מוצר</th>
+                                <th scope="col">מחיר</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <th scope="row">
+                                    <div class="d-flex align-items-center">
+                                        <img th:src="${product.product.picture}" class="img-fluid rounded-3"
+                                            style="width: 120px;" alt="Book">
+                                        <div class="flex-column ms-4">
+                                            <p class="mb-2" th:text="${product.product.name}"></p>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <td class="align-middle">
+                                    <p class="mb-0" style="font-weight: 500;" th:text="'$' + ${product.product.price}"></p>
+                                </td>
+                                <td class="align-middle">
+                                    <form action="#"
+                                        th:action="@{'/cart/' + ${product.id} + '?category=' + ${category}}"
+                                        th:method="delete">
+                                        <button type="submit" class="btn btn-danger btn-sm">X</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button th:if="${sum > 0}" type="button" class="btn btn-primary btn-block w-100">
+                    <div class="w-100">
+                        <span class="m-2">לתשלום</span>
+                        <span th:text="' ( $' + ${sum} + ' ) '"></span>
+                    </div>
+                </button>
+            </div>
+        </section>
+</body>
