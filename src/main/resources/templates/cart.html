@@ -42,10 +42,17 @@
                         </tbody>
                     </table>
                 </div>
-                <button th:if="${sum > 0}" type="button" class="btn btn-primary btn-block w-100">
+                    <a th:href="@{'/payment'}" th:if="${sum > 0}" type="button" class="btn btn-primary btn-block w-100 rounded-0">
+                        <div class="w-100">
+                            <span class="m-2">לתשלום</span>
+                            <span th:text="' ( $' + ${sum} + ' ) '"></span>
+                        </div>
+                    </a>
+               
+
+                <button th:if="${sum <= 0}" type="button" class="btn btn-secondary btn-block w-100" disabled>
                     <div class="w-100">
                         <span class="m-2">לתשלום</span>
-                        <span th:text="' ( $' + ${sum} + ' ) '"></span>
                     </div>
                 </button>
             </div>

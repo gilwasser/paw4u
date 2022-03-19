@@ -77,4 +77,13 @@ public class AuthService {
             sessionRepository.delete(sessions.get(0));
         }
     }
+
+    public String getName(String token) {
+        Session session = getSession(token);
+        if(session == null) {
+            return "";
+        }
+        Client client = session.getClient();
+        return client.getName() + ' ' + client.getLastName();
+    }
 }

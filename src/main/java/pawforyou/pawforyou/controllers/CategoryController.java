@@ -29,21 +29,14 @@ public class CategoryController {
     @GetMapping("/")
     public String greeting(Model model,
                            HttpServletResponse response ,@CookieValue(name = "token", defaultValue = "") String token) {
-        model.addAttribute("name", getName(token));
+        model.addAttribute("name", authService.getName(token));
         
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         return "home";
     }
 
-    private String getName(String token) {
-        Session session = authService.getSession(token);
-        if(session == null) {
-            return "";
-        }
-        Client client = session.getClient();
-        return client.getName() + ' ' + client.getLastName();
-    }
+    
 
     @GetMapping("/category/{id}")
     public String categoryAll(@PathVariable int id, Model model,HttpServletRequest request,
@@ -62,7 +55,7 @@ public class CategoryController {
         model.addAttribute("cartSum", sum);
 
         model.addAttribute("category",   id);
-        model.addAttribute("name",   getName(token));
+        model.addAttribute("name",   authService.getName(token));
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("products", products);
         return "category";
