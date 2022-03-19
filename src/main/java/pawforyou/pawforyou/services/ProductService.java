@@ -26,10 +26,22 @@ public class ProductService {
         return productRepository.getProductsPage(pageable);
     }
 
-    public List<Product> getProductsByCategory(int id){
+    public List<Product> getAllProducts() {
+        List<Product> products = new ArrayList<Product>();
+        productRepository.findAll().forEach(products :: add);
+        return products;
+    }
+
+    public List<Product> getProductsByCategory(int id, String direction, String prop){
         Optional<Category> category = categoryService.getCategoryById(id);
+        Sort sort;
+        if(direction.equals("descending")){
+            sort = Sort.by(Sort.Direction.DESC, prop);
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, prop);
+        }
         if(category.isPresent()){
-            return  productRepository.findByCategory(category.get());
+            return  productRepository.findByCategory(category.get(), sort);
         }
         return new ArrayList<>();
     }
@@ -38,7 +50,9 @@ public class ProductService {
         return productRepository.getInSaleProducts();
     }
 
-
+    public List<Product> getDeletedInSale() {
+        return productRepository.getDeletedProducts();
+    }
 
     public Optional<Product> getProduct(int id){
         return productRepository.findById(id);
@@ -49,8 +63,22 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public void updateProduct(Product product){
+        productRepository.save(product);
+    }
+
 
     public void deleteProduct(int id){
         productRepository.deleteById(id);
+    }
+
+    public List<Product> getDiscountedProducts(String direction, String prop) {
+        Sort sort;
+        if(direction.equals("descending")){
+            sort = Sort.by(Sort.Direction.DESC, prop);
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, prop);
+        }
+        return productRepository.getDiscountedProducts(sort);
     }
 }

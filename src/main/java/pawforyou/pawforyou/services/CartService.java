@@ -31,11 +31,17 @@ public class CartService {
 
     public List<ProductInCart> getProductList(Client client) {
         List<ProductInCart> products = productInCartRepository.findByClient(client);
-
         return products;
     }
 
     public void deleteById(int id){
         productInCartRepository.deleteById(id);
+    }
+
+    public void empty(Client client) {
+        List<ProductInCart> products = getProductList(client);
+        for(ProductInCart product: products) {
+            productInCartRepository.delete(product);
+        }
     }
 }

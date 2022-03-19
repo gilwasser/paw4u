@@ -38,7 +38,7 @@ public class AuthController {
             return "redirect:/auth";
         }
         Cookie cookie = new Cookie("token", session.getToken().toString());
-        cookie.setMaxAge(60*30);
+        cookie.setMaxAge(60*60*24*14);
         cookie.setPath("/");
         response.addCookie(cookie);
         return "redirect:/";

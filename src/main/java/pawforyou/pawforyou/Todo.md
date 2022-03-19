@@ -10,12 +10,10 @@ Yulia
     - Cart (product list user id)
     
 Gil
-1. product page design
-2. Session model
-3. Session id generation
-4. login page + saving
-5. cart functionality
-6. add to cart
-7. clear cart
-8. buy take to payment page
-9. admin page 
+1. admin page 
+2. add product page
+3. delivery page
+4. sale page
+5. my purchases
+6. sales page
+7. stock page

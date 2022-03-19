@@ -16,36 +16,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="product : ${products}">
-                                <th scope="row">
-                                    <div class="d-flex align-items-center">
-                                        <img th:src="${product.product.picture}" class="img-fluid rounded-3"
-                                            style="width: 120px;" alt="Book">
-                                        <div class="flex-column ms-4">
-                                            <p class="mb-2" th:text="${product.product.name}"></p>
+                            <tr th:each="product : ${products}" th:class="${product.product.inSale ? '' : 'bg-secondary'}">
+                                    <th scope="row" >
+                                        <div class="d-flex align-items-center ">
+                                            <div class="img-sm">
+                                                <img th:src="${product.product.picture}"  class="img rounded-3"
+                                                style="width: 120px;" alt="Book">
+                                            </div>
+                                            
+                                            <div class="flex-column ms-4">
+                                                <p class="mb-2" th:text="${product.product.name}"></p>
+                                            </div>
+                                            <div><h5 class="text-warning" th:if="${!product.product.inSale}">לא למכירה</h5>                                            </div>
                                         </div>
-                                    </div>
-                                </th>
+                                    </th>
 
-                                <td class="align-middle">
-                                    <p class="mb-0" style="font-weight: 500;" th:text="'$' + ${product.product.price}"></p>
-                                </td>
-                                <td class="align-middle">
-                                    <form action="#"
-                                        th:action="@{'/cart/' + ${product.id} + '?category=' + ${category}}"
-                                        th:method="delete">
-                                        <button type="submit" class="btn btn-danger btn-sm">X</button>
-                                    </form>
-                                </td>
-                            </tr>
+                                    <td class="align-middle">
+                                        <p class="mb-0" style="font-weight: 500;"
+                                            th:text="'$' + ${product.product.price > product.product.salePrice? product.product.salePrice: product.product.price}"></p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <form action="#"
+                                            th:action="@{'/cart/' + ${product.id} + '?category=' + ${category}}"
+                                            th:method="delete">
+                                            <button type="submit" class="btn btn-danger btn-sm">X</button>
+                                        </form>
+                                    </td>
+
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <button th:if="${sum > 0}" type="button" class="btn btn-primary btn-block w-100">
+                <a th:href="@{'/payment'}" th:if="${sum > 0}" type="button"
+                    class="btn btn-primary btn-block w-100 rounded-0">
                     <div class="w-100">
                         <span class="m-2">לתשלום</span>
                         <span th:text="' ( $' + ${sum} + ' ) '"></span>
+                    </div>
+                </a>
+
+
+                <button th:if="${sum <= 0}" type="button" class="btn btn-secondary btn-block w-100" disabled>
+                    <div class="w-100">
+                        <span class="m-2">לתשלום</span>
                     </div>
                 </button>
             </div>

@@ -5,3 +5,22 @@ div.img img{
   display: block;
   margin: auto;
 }
+
+
+div.img-sm img{
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+  margin: auto;
+}
+
+div h3.discounted{ 
+  text-decoration: line-through;
+  color: gray;
+  font-size: medium;
+}
+
+div.price{
+  height: 50px;
+}

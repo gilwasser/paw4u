@@ -31,6 +31,9 @@ public class CartController {
         }
         Client client = session.getClient();
         cartService.addProduct(productId, client);
+        if(category.equals("discount")) {
+            return "redirect:/discount" ;
+        }
         return "redirect:/category/" + category.toString();
     }
 
@@ -43,6 +46,9 @@ public class CartController {
             return "redirect:/auth";
         }
         cartService.deleteById(id);
+        if(category.equals("discount")) {
+            return "redirect:/discount" ;
+        }
         return "redirect:/category/" + category.toString();
     }
 }

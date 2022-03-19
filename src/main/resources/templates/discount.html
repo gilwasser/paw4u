@@ -27,7 +27,7 @@
                 <span>|</span>
                 <a th:href="@{?sort=insertionDate&diraction=ascending}" href="">ישן</a>
             </div>
-            <div class="container  d-grid gap-3">
+            <div class="container mt-5 d-grid gap-3">
                 <div class=" row">
                     <div th:each="product: ${products}" class="col-lg-4 col-md-12 mt-4">
                         <div class="card rounded-0">
@@ -42,30 +42,23 @@
                                     <a th:href="@{${product.category.id}}" class="text-muted" data-abc="true"
                                         th:text="${product.category.name}"></a>
                                 </div>
-                                <div class="price">
-                                    <h3 th:if="${product.price > product.salePrice && product.salePrice > 0}"
-                                        class="mb-0 font-weight-semibold" th:text="${product.salePrice + ' ש''ח'}"></h3>
+                                <h3 class="mb-0 font-weight-semibold text-primary" th:text="${product.salePrice + ' ש''ח'}"></h3>
 
-                                    <h3 th:class="'mb-0 font-weight-semibold ' + ${product.price > product.salePrice && product.salePrice > 0? 'discounted': ''}"
-                                        th:text="${product.price + ' ש''ח'}"></h3>
-                                </div>
+                                <h3 th:class="'mb-0 font-weight-semibold ' + ${product.price > product.salePrice ? 'discounted': ''}" th:text="${product.price + ' ש''ח'}"></h3>
                                 <div> <i class="fa fa-star star"></i> <i class="fa fa-star star"></i> <i
                                         class="fa fa-star star"></i> <i class="fa fa-star star"></i> </div>
 
                             </div>
-                            <a th:href="@{'/cart/' + ${product.id}} + '?category=' + ${category}"
-                                th:if="${product.stock > 0}" type="button"
-                                class="btn btn-primary w-100 btn-block rounded-0">הוספה לעגלת
+                            <a th:href="@{'/cart/' + ${product.id}} + '?category=' + ${category}" th:if="${product.stock > 0}" type="button" class="btn btn-primary w-100 btn-block rounded-0">הוספה לעגלת
                                 הקניות</a>
-                            <button th:if="${product.stock <= 0}" type="button"
-                                class="btn btn-secondary w-100 btn-block rounded-0" disabled>אזל המלאי</button>
+                            <button th:if="${product.stock <= 0}" type="button" class="btn btn-secondary w-100 btn-block rounded-0" disabled>אזל המלאי</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div th:if="${client != null}" class="col-md-4 mt-5 p-4">
-            <div th:insert="cart :: cart(${cartProducts}, ${cartSum}, ${category})"></div>
+            <div th:insert="cart :: cart(${cartProducts}, ${sum}, ${category})"></div>
         </div>
     </div>
 

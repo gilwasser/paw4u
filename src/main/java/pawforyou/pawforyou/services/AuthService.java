@@ -64,7 +64,9 @@ public class AuthService {
         System.out.println(token);
         if(sessions.size() > 0 ) {    
             if(sessions.get(0).getEpirationDate().after(new Date())){
-                return sessions.get(0).expirationDate(new Date((new Date()).getTime() + 30*60000));
+                Session session = sessions.get(0).expirationDate(new Date((new Date()).getTime() + 30*60000));
+                sessionRepository.save(session);
+                return session;
             }
             sessionRepository.delete(sessions.get(0));
         }
@@ -76,5 +78,26 @@ public class AuthService {
         if(sessions.size() > 0) {
             sessionRepository.delete(sessions.get(0));
         }
+    }
+
+    public String getName(String token) {
+        Session session = getSession(token);
+        if(session == null) {
+            return "";
+        }
+        Client client = session.getClient();
+        return client.getName() + ' ' + client.getLastName();
+    }
+
+    public Client getAdmin(){
+        return clientRepository.findById(1).get();
+    }
+
+    public Client getClient(String token) {
+        Session session = getSession(token);
+        if(session == null){
+            return null;
+        }
+        return session.getClient();
     }
 }
