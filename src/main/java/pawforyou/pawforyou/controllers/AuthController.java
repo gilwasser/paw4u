@@ -18,53 +18,68 @@ import pawforyou.pawforyou.models.RegisterForm;
 import pawforyou.pawforyou.models.Session;
 import pawforyou.pawforyou.services.AuthService;
 
-
+/*
+ * Controller for login logout register
+ */
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired private AuthService authService;
+    @Autowired
+    private AuthService authService;
 
+    /*
+     * get login page
+     */
     @GetMapping
-    public String getLoginPage(Model model){
+    public String getLoginPage(Model model) {
         model.addAttribute("loginForm", new LoginForm());
         return "login";
     }
 
+    /*
+     * Make login and create session
+     */
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginForm loginForm, Model model, HttpServletResponse response){
+    public String login(@ModelAttribute LoginForm loginForm, Model model, HttpServletResponse response) {
         model.addAttribute("loginForm", loginForm);
         Session session = authService.login(loginForm);
-        if(session == null) {
+        if (session == null) {
             return "redirect:/auth";
         }
         Cookie cookie = new Cookie("token", session.getToken().toString());
-        cookie.setMaxAge(60*60*24*14);
+        cookie.setMaxAge(60 * 60 * 24 * 14);
         cookie.setPath("/");
         response.addCookie(cookie);
         return "redirect:/";
     }
 
     @GetMapping("/register")
-    public String getRegisterPage(Model model){
+    public String getRegisterPage(Model model) {
         model.addAttribute("registerForm", new RegisterForm());
         return "register";
     }
 
+    /*
+     * will create client
+     */
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterForm registerForm, Model model){
+    public String register(@ModelAttribute RegisterForm registerForm, Model model) {
         model.addAttribute("register", registerForm);
         Client client = authService.register(registerForm);
-        if(client == null) {
+        if (client == null) {
             return "redirect:/auth/register";
         }
         return "redirect:/auth";
     }
 
+    /*
+    * logut the client
+    */
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response){
-      
-        for(Cookie cookie : request.getCookies()){
-            if(cookie.getName().equals("token")){
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals("token")) {
                 authService.logout(cookie.getValue());
                 cookie = new Cookie("token", "");
                 cookie.setMaxAge(0);

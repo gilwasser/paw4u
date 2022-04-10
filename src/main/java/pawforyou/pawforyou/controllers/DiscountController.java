@@ -30,23 +30,25 @@ public class DiscountController {
     @Autowired
     private ProductService productService;
 
+    /*
+    * get discout page
+    */
     @GetMapping
     public String getDiscountPage(@CookieValue(name = "token", defaultValue = "") String token,
-    @RequestParam(name = "sort", defaultValue = "salePrice") String prop,
-    @RequestParam(name = "diraction", defaultValue = "ascending") String direction,
-    Model model) {
+            @RequestParam(name = "sort", defaultValue = "salePrice") String prop,
+            @RequestParam(name = "diraction", defaultValue = "ascending") String direction,
+            Model model) {
         Client client = authService.getClient(token);
         double sum = 0;
-        if(client == null ) {
-            return "redirect:/";
-        }
+
         List<ProductInCart> products = cartService.getProductList(client);
         List<Product> discountedProducts = productService.getDiscountedProducts(direction, prop);
 
+        
         for (ProductInCart product : products) {
             Product p = product.getProduct();
             if (p.isInSale()) {
-                sum += p.getPrice() > p. getSalePrice()? p.getSalePrice(): p.getPrice();
+                sum += p.getPrice() > p.getSalePrice() ? p.getSalePrice() : p.getPrice();
             }
         }
 

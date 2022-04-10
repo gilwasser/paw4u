@@ -17,8 +17,11 @@
                         <a class="nav-link" href="/discount">מבצעים חמים</a>
                     </li>
                     <li th:each="category: ${categories}" class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{'/category/' + ${category.id}}"
+                        <a class="nav-link" aria-current="page" th:href="@{'/category/' + ${category.id}}"
                             th:text="${category.name}"></a>
+                    </li>
+                    <li th:if="${client != null}" class="nav-item">
+                        <a class="nav-link" href="/orders">הזמנות</a>
                     </li>
                 </ul>
                 <span class="m-auto"></span>

@@ -13,7 +13,6 @@
 
 <body>
     <section class="vh-100">
-        <h1 th:text="${sell}"></h1>
         <form action="#" th:action="@{'/admin/product' + ${path} + '?sell=' + ${sell}}" th:object="${productForm}" th:method="${method}">
             <div class="container py-5 h-100">
                 <div class="row d-flex justify-content-center align-items-center h-100">
@@ -22,7 +21,7 @@
 
                             <div class="card-body p-5">
                                 <div class="text-center">
-                                    <h3 class="mb-5">יצירת מוצר</h3>
+                                    <h3 class="mb-5">יצירת / עריכת מוצר</h3>
                                 </div>
 
                                 <div class="form-group row  mb-2 ">
@@ -61,7 +60,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row  mb-2 ">
-                                    <label class="col-sm-4" for="typeStockX-2">קטוגריה</label>
+                                    <label class="col-sm-4" for="typeStockX-2">קטגוריה</label>
                                     <div class="col-sm-8">
                                         <select th:field="*{category}" class="d-block w-100 form-select" id="country" required>
                                             <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>

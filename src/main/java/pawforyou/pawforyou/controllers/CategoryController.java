@@ -32,23 +32,29 @@ public class CategoryController {
     @Autowired
     private CartService cartService;
 
+    /*
+     * get home page
+     */
     @GetMapping("/")
-    public String greeting(Model model, @CookieValue(name = "token", defaultValue = "") String token) {
-        Client client =  authService.getClient(token);
+    public String home(Model model, @CookieValue(name = "token", defaultValue = "") String token) {
+        Client client = authService.getClient(token);
         model.addAttribute("client", client);
         model.addAttribute("categories", categoryService.getAllCategories());
-        return "home";
+        return "redirect:/discount";
     }
 
+    /*
+     * Get category page
+     */
     @GetMapping("/category/{id}")
-    public String categoryAll(
-        @PathVariable int id, Model model,
-         HttpServletRequest request,
+    public String category(
+            @PathVariable int id, Model model,
+            HttpServletRequest request,
             @CookieValue(name = "token", defaultValue = "") String token,
-             @RequestParam(name="sort", defaultValue = "insertionDate") String sortProperty,
-             @RequestParam(name="diraction", defaultValue = "descending") String sortDiraction ) {
-        
-        List<Product> products = productService.getProductsByCategory(id, sortDiraction, sortProperty );
+            @RequestParam(name = "sort", defaultValue = "insertionDate") String sortProperty,
+            @RequestParam(name = "diraction", defaultValue = "descending") String sortDiraction) {
+
+        List<Product> products = productService.getProductsByCategory(id, sortDiraction, sortProperty);
         Session session = authService.getSession(token);
         Client client = null;
         double sum = 0;
@@ -57,27 +63,21 @@ public class CategoryController {
             List<ProductInCart> cartProudcts = cartService.getProductList(session.getClient());
             model.addAttribute("cartProducts", cartProudcts);
             client = session.getClient();
+            // add product to cart model
             for (ProductInCart product : cartProudcts) {
                 Product p = product.getProduct();
-                if(product.getProduct().isInSale()){
-                    sum += p.getPrice() > p.getSalePrice()? p.getSalePrice(): p.getPrice();
+                if (product.getProduct().isInSale()) {
+                    sum += p.getPrice() > p.getSalePrice() ? p.getSalePrice() : p.getPrice();
                 }
             }
         }
 
         model.addAttribute("client", client)
-                .addAttribute("cartSum",  Math.ceil(sum * 100) / 100)
+                .addAttribute("cartSum", Math.ceil(sum * 100) / 100)
                 .addAttribute("category", id)
                 .addAttribute("categories", categoryService.getAllCategories())
                 .addAttribute("products", products);
         return "category";
     }
 
-    @GetMapping("/in-sale")
-    public String inSale(Model model) {
-        List<Product> products = productService.getProductsInSale();
-        model.addAttribute("categories", categoryService.getAllCategories())
-                .addAttribute("products", products);
-        return "category";
-    }
 }

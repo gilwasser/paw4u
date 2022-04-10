@@ -3,6 +3,7 @@ package pawforyou.pawforyou.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import pawforyou.pawforyou.models.PaymentForm;
 import pawforyou.pawforyou.models.Product;
 import pawforyou.pawforyou.models.ProductInCart;
 import pawforyou.pawforyou.models.Purchase;
+import pawforyou.pawforyou.models.State;
 import pawforyou.pawforyou.repositories.ItemInPurchaseRepository;
 import pawforyou.pawforyou.repositories.PurchaseRepository;
 
@@ -40,6 +42,30 @@ public class PaymentService {
                 .lastName(paymentForm.getLastName())
                 .country(paymentForm.getState())
                 .zip(paymentForm.getZip());
+        notInStock =updateProducts(products, filteredProducts);
+        
+        if (notInStock.size() > 0) {
+            return notInStock;
+        }
+        
+        purchase = purchaseRepository.save(purchase);
+        saveUpdatedProducts(filteredProducts, purchase);
+
+        cartService.empty(client);
+        return null;
+    }
+
+    private void saveUpdatedProducts(List<Product> filteredProducts, Purchase purchase) {
+        for (Product p : filteredProducts) {
+            productService.addProduct(p);
+            ItemInPurchase item = new ItemInPurchase();
+            item.product(p).purchase(purchase);
+            itemInPurchaseRepository.save(item);
+        }
+    }
+
+    private List<ProductInCart> updateProducts(List<ProductInCart> products, List<Product> filteredProducts) {
+        List<ProductInCart> notInStock = new ArrayList<>();
 
         for (ProductInCart p : products) {
             Product product = p.getProduct();
@@ -49,30 +75,12 @@ public class PaymentService {
                     notInStock.add(p);
                 }
                 product.setStock(stock - 1);
+                if (product.getStock() == 0) {
+                    product.inSale(false);
+                }
                 filteredProducts.add(product);
             }
         }
-
-        if (notInStock.size() > 0) {
-            return notInStock;
-        }
-        purchase = purchaseRepository.save(purchase);
-        for (Product p : filteredProducts) {
-            productService.addProduct(p);
-            ItemInPurchase item = new ItemInPurchase();
-            item.product(p).purchase(purchase);
-            itemInPurchaseRepository.save(item);
-        }
-
-        cartService.empty(client);
-        return null;
-    }
-
-
-    public List<Purchase> getOrders(){
-        List<Purchase> purchases = new ArrayList<>();
-        this.purchaseRepository.findAll().forEach(purchases:: add);
-
-        return purchases;
+        return notInStock;
     }
 }

@@ -12,7 +12,32 @@
 </head>
 
 <body >
-    <div class="text-center mb-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm border">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <h4>פאנל אדמין</h4>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/product}">הוספת מוצר</a>
+                    </li>
+                    <li th:if="${action == 'in-sale'}"  class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/deleted}">מוצרים שנמחקו</a>
+                    </li>
+                    <li th:if="${action == 'deleted'}"  class="nav-item">
+                        <a  class="nav-link" th:href="@{/admin}">מוצרים נמכרים</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">חזרה לאתר</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- <div class="text-center mb-3">
 
         <h1>פאנל אדמין</h1>
         <div class="container m-auto my-4">
@@ -28,7 +53,7 @@
         <h2 th:if="${action == 'deleted'}">מוצרים שנמחקו</h2>
 
         
-    </div>
+    </div> -->
     <div class="container text-right">
 
         <table class="table">

@@ -20,34 +20,42 @@ public class CartController {
     @Autowired
     private AuthService authService;
 
-    @Autowired CartService cartService;
+    @Autowired
+    CartService cartService;
+
+    /*
+     * add product to cart of client
+     */
     @GetMapping("/{productId}")
     public String addProductToCart(@PathVariable("productId") int productId,
-     @RequestParam(name = "category") String category,
-     @CookieValue(name = "token", defaultValue = "") String token ) {
+            @RequestParam(name = "category") String category,
+            @CookieValue(name = "token", defaultValue = "") String token) {
         Session session = authService.getSession(token);
-        if(session == null) {
+        if (session == null) {
             return "redirect:/auth";
         }
         Client client = session.getClient();
         cartService.addProduct(productId, client);
-        if(category.equals("discount")) {
-            return "redirect:/discount" ;
+        if (category.equals("discount")) {
+            return "redirect:/discount";
         }
         return "redirect:/category/" + category.toString();
     }
 
-
+    /*
+    * delete product from client cart
+    */
     @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable("id") int id, @CookieValue(name = "token", defaultValue = "") String token,
-    @RequestParam(name = "category") String category) {
+    public String deleteProduct(@PathVariable("id") int id,
+            @CookieValue(name = "token", defaultValue = "") String token,
+            @RequestParam(name = "category") String category) {
         Session session = authService.getSession(token);
-        if(session == null) {
+        if (session == null) {
             return "redirect:/auth";
         }
         cartService.deleteById(id);
-        if(category.equals("discount")) {
-            return "redirect:/discount" ;
+        if (category.equals("discount")) {
+            return "redirect:/discount";
         }
         return "redirect:/category/" + category.toString();
     }

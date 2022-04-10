@@ -11,4 +11,8 @@ public enum State {
     private State(String label) {
         this.label = label;
     }
+
+    public String toString(){
+        return label;
+    }
 }

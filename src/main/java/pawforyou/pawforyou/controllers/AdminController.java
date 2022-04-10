@@ -15,19 +15,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import pawforyou.pawforyou.models.Category;
-import pawforyou.pawforyou.models.Client;
 import pawforyou.pawforyou.models.Product;
 import pawforyou.pawforyou.models.ProductDTO;
 import pawforyou.pawforyou.models.Purchase;
 import pawforyou.pawforyou.models.Session;
 import pawforyou.pawforyou.services.AuthService;
 import pawforyou.pawforyou.services.CategoryService;
-import pawforyou.pawforyou.services.PaymentService;
+import pawforyou.pawforyou.services.OrderService;
 import pawforyou.pawforyou.services.ProductService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/*  Endpoints for managing the shop
+    adding updating and deleting products
+    changing order status etc...
+*/
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -38,8 +41,11 @@ public class AdminController {
     @Autowired
     private CategoryService categoryService;
     @Autowired
-    private PaymentService paymentService;
+    private OrderService orderService;
 
+    /**
+     * Endpoint for getting the admin page
+     */
     @GetMapping
     public String getAdminPage(@CookieValue(name = "token", defaultValue = "") String token, Model model) {
         if (!isAdmin(token)) {
@@ -50,6 +56,9 @@ public class AdminController {
         return "admin";
     }
 
+    /**
+     * Endpoint for getting deleted products page
+     */
     @GetMapping("/deleted")
     public String getDeletePage(@CookieValue(name = "token", defaultValue = "") String token, Model model) {
         if (!isAdmin(token)) {
@@ -61,21 +70,9 @@ public class AdminController {
         return "admin";
     }
 
-    @GetMapping("/delivery")
-    public String getDeliveryPage() {
-        return "delivery";
-    }
-
-    @PostMapping("/stock/{id}")
-    public String updateStock() {
-        return "redirect:/stock";
-    }
-
-    @PostMapping("/deliver/{id}")
-    public String updateDelivery() {
-        return "delivery";
-    }
-
+    /**
+     * Endpoint for deleting product
+     */
     @DeleteMapping("/product/{id}")
     public String deleteProduct(@CookieValue(name = "token", defaultValue = "") String token,
             @PathVariable("id") int id) {
@@ -90,6 +87,9 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    /**
+     * Endpoint for Taking product back to in Sale
+     */
     @PostMapping("/product/in-sale/{id}")
     public String moveProductToIsnSale(@CookieValue(name = "token", defaultValue = "") String token,
             @PathVariable("id") int id) {
@@ -104,6 +104,9 @@ public class AdminController {
         return "redirect:/admin/deleted";
     }
 
+    /*
+     *  Endpoint for adding product
+     */
     @PostMapping("/product")
     public String addProduct(@CookieValue(name = "token", defaultValue = "") String token,
             @ModelAttribute ProductDTO productForm, Model model) {
@@ -112,9 +115,7 @@ public class AdminController {
             return "redirect:/";
         }
         Product product = new Product(productForm);
-        if (product.getSalePrice() <= 0 || product.getSalePrice() > product.getPrice()) {
-            product.setSalePrice(product.getPrice());
-        }
+        extracted(product);
 
         Optional<Category> category = categoryService.getCategoryById(productForm.getCategory());
         if (!category.isPresent()) {
@@ -125,6 +126,9 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    /**
+     * Endpint for updating product
+     */
     @PutMapping("/product/{id}")
     public String updateProduct(
             @CookieValue(name = "token", defaultValue = "") String token,
@@ -138,16 +142,10 @@ public class AdminController {
 
         Product product = new Product(productForm);
         model.addAttribute("productForm", productForm);
-
-        if (product.getSalePrice() <= 0 || product.getSalePrice() > product.getPrice()) {
-            product.setSalePrice(product.getPrice());
-        }
-
-        if (sell.equals("true")) {
-            product.setInSale(true);
-        } else {
-            product.setInSale(false);
-        }
+        // if saleprice is not sale put real price
+        
+        resetSalePriceIfNeeded(product);
+        setInSale(sell, product);
 
         Optional<Category> category = categoryService.getCategoryById(productForm.getCategory());
         if (!category.isPresent()) {
@@ -155,8 +153,10 @@ public class AdminController {
         }
         product.category(category.get());
         product.id(id);
+
         productService.addProduct(product);
 
+        // return to last page
         if (sell.equals("true")) {
             return "redirect:/admin";
         } else {
@@ -165,6 +165,28 @@ public class AdminController {
 
     }
 
+    private void setInSale(String sell, Product product) {
+        if (sell.equals("true")) {
+            product.setInSale(true);
+        } else {
+            product.setInSale(false);
+        }
+
+        if(product.getStock() == 0){
+            product.inSale(false);
+        }
+    }
+
+
+    private void resetSalePriceIfNeeded(Product product) {
+        if (product.getSalePrice() <= 0 || product.getSalePrice() > product.getPrice()) {
+            product.setSalePrice(product.getPrice());
+        }
+    }
+
+    /**
+     * Get products managing page
+     */
     @GetMapping("/product")
     public String getAddProductPage(@CookieValue(name = "token", defaultValue = "") String token,
             Model model) {
@@ -178,6 +200,9 @@ public class AdminController {
         return "productForm";
     }
 
+    /**
+     * get product edit form 
+     */
     @GetMapping("/product/{id}")
     public String getEditProductPage(@CookieValue(name = "token", defaultValue = "") String token,
             @RequestParam(name = "sell", defaultValue = "true") String sell,
@@ -199,6 +224,9 @@ public class AdminController {
         return "productForm";
     }
 
+    /**
+     * Method for checking if logged in client is the admin
+     */
     private boolean isAdmin(String token) {
         Session session = this.authService.getSession(token);
         if (session == null) {
@@ -209,16 +237,36 @@ public class AdminController {
         }
         return true;
     }
+
+
+    /**
+     * Endpint for getting purchases page here admin can manage the order status
+     */
     @GetMapping("/purchases")
     public String getPurchasesPage(@CookieValue(name = "token", defaultValue = "") String token,
-        Model model){
-        if(!isAdmin(token)) {
+            Model model) {
+        if (!isAdmin(token)) {
             return "redirect:/";
         }
-        List<Purchase> orders = this.paymentService.getOrders();
+        List<Purchase> orders = this.orderService.getOrders();
         model.addAttribute("orders", orders);
         System.out.println(orders);
         return "purchases-manager";
+    }
+
+    /*
+     * Endpoint for updating order status
+     */
+    @PostMapping("/order/state/{id}")
+    public String updateOrderState(
+            @CookieValue(name = "token", defaultValue = "") String token,
+            @PathVariable("id") int id, @RequestParam("state") String state) {
+        if (!isAdmin(token)) {
+            return "redirect:/";
+        }
+        this.orderService.updateOrderState(id, state);
+
+        return "redirect:/admin/purchases";
     }
 
 }

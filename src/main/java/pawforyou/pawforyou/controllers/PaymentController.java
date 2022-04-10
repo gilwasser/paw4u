@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pawforyou.pawforyou.models.Client;
 import pawforyou.pawforyou.models.PaymentForm;
 import pawforyou.pawforyou.models.ProductInCart;
+import pawforyou.pawforyou.models.Purchase;
 import pawforyou.pawforyou.models.Session;
 import pawforyou.pawforyou.services.AuthService;
 import pawforyou.pawforyou.services.CartService;
@@ -32,6 +33,9 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
+    /*
+     * get payment page
+     */
     @GetMapping
     public String getPaymentPage(@CookieValue(name = "token", defaultValue = "") String token, Model model) {
         Session session = authService.getSession(token);
@@ -42,7 +46,9 @@ public class PaymentController {
 
         List<ProductInCart> cartProudcts = cartService.getProductList(session.getClient());
         for (ProductInCart product : cartProudcts) {
-            sum += product.getProduct().getPrice();
+            if(product.getProduct().isInSale()){
+                sum += product.getProduct().getPrice();
+            }
         }
 
         model.addAttribute("payment", new PaymentForm())
@@ -53,6 +59,9 @@ public class PaymentController {
         return "payment";
     }
 
+    /*
+    * pay for product in cart
+    */
     @PostMapping
     public String pay(@CookieValue(name = "token", defaultValue = "") String token,
             @ModelAttribute PaymentForm paymentForm, Model model) {
@@ -66,4 +75,5 @@ public class PaymentController {
         model.addAttribute("payment", paymentForm);
         return "payed";
     }
+
 }
