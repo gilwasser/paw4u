@@ -115,7 +115,6 @@ public class AdminController {
             return "redirect:/";
         }
         Product product = new Product(productForm);
-        extracted(product);
 
         Optional<Category> category = categoryService.getCategoryById(productForm.getCategory());
         if (!category.isPresent()) {

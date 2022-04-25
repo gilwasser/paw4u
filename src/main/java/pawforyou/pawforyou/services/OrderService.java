@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pawforyou.pawforyou.models.Client;
-import pawforyou.pawforyou.models.ItemInPurchase;
 import pawforyou.pawforyou.models.Purchase;
 import pawforyou.pawforyou.models.State;
-import pawforyou.pawforyou.repositories.ItemInPurchaseRepository;
 import pawforyou.pawforyou.repositories.PurchaseRepository;
 
 @Service
@@ -19,8 +17,7 @@ public class OrderService {
     @Autowired
     private PurchaseRepository purchaseRepository;
 
-    @Autowired
-    private ItemInPurchaseRepository itemInPurhcaseRepository;
+
 
     public List<Purchase> getOrders(){
         List<Purchase> purchases = new ArrayList<>();

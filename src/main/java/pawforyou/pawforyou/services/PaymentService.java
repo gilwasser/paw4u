@@ -3,7 +3,6 @@ package pawforyou.pawforyou.services;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import pawforyou.pawforyou.models.PaymentForm;
 import pawforyou.pawforyou.models.Product;
 import pawforyou.pawforyou.models.ProductInCart;
 import pawforyou.pawforyou.models.Purchase;
-import pawforyou.pawforyou.models.State;
 import pawforyou.pawforyou.repositories.ItemInPurchaseRepository;
 import pawforyou.pawforyou.repositories.PurchaseRepository;
 

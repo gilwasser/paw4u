@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import pawforyou.pawforyou.models.Category;
 import pawforyou.pawforyou.models.Client;
 import pawforyou.pawforyou.models.Product;
 import pawforyou.pawforyou.models.ProductInCart;

@@ -7,11 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import pawforyou.pawforyou.models.Client;
-import pawforyou.pawforyou.models.ItemInPurchase;
 import pawforyou.pawforyou.models.Purchase;
 import pawforyou.pawforyou.services.AuthService;
 import pawforyou.pawforyou.services.CategoryService;

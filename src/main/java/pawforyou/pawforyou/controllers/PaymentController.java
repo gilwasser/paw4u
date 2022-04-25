@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pawforyou.pawforyou.models.Client;
 import pawforyou.pawforyou.models.PaymentForm;
 import pawforyou.pawforyou.models.ProductInCart;
-import pawforyou.pawforyou.models.Purchase;
 import pawforyou.pawforyou.models.Session;
 import pawforyou.pawforyou.services.AuthService;
 import pawforyou.pawforyou.services.CartService;
